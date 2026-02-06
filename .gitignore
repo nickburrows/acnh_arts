@@ -24,3 +24,22 @@ Icon[
 Network Trash Folder
 Temporary Items
 .apdisk
+# Node.js
+node_modules/
+package-lock.json
+*.pem
+
+# Wrangler
+.wrangler/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
