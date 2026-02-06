@@ -13,94 +13,138 @@
 ## 技術堆疊
 
 - **前端**: HTML5 + TailwindCSS + Vanilla JavaScript
-- **部署**: Cloudflare Pages / Cloudflare Workers
+- **部署**: GitHub Pages
 - **版本控制**: Git + GitHub
 
 ---
 
 ## 快速部署指南
 
-### 方式 A：使用 Cloudflare Pages（推薦）⭐
+### 前置要求
 
-#### 步驟 1：上傳至 GitHub
+- GitHub 帳戶
+- Git 已安裝
+
+### 部署步驟
+
+#### 步驟 1：推送至 GitHub
 
 ```bash
-# 初始化 Git 並推送至 GitHub
+cd /Users/nick/My/GitHub/acnh_arts
+
+# 檢查 Git 狀態
+git status
+
+# 添加所有檔案
 git add .
+
+# 提交
 git commit -m "Initial commit: ACNH Arts Web App"
+
+# 添加遠程倉庫（替換 USERNAME）
 git remote add origin https://github.com/USERNAME/acnh_arts.git
+
+# 設定主分支為 main
 git branch -M main
+
+# 推送
 git push -u origin main
 ```
 
-#### 步驟 2：部署至 Cloudflare Pages
+#### 步驟 2：啟用 GitHub Pages
 
-1. 登入 [Cloudflare 儀表板](https://dash.cloudflare.com/)
-2. **Pages** → **連接到 Git** → **GitHub**
-3. 授權並選擇 `acnh_arts` 存放庫
-4. 構建設定：
-   - 項目名稱: `acnh-arts`
-   - 生產分支: `main`
-   - 框架預設: `None`
-   - 點擊 **保存並部署**
+1. 訪問您的倉庫：`https://github.com/USERNAME/acnh_arts`
+2. 點擊 **Settings** 標籤
+3. 左側邊欄找 **Pages**
+4. 在 **Source** 選擇 **Deploy from a branch**
+5. 選擇 **Branch: main**, **Folder: / (root)**
+6. 點擊 **Save**
 
-您的網站將在 `https://acnh-arts.pages.dev` 上線！
+#### 步驟 3：訪問您的網站
 
----
+等待 1-2 分鐘，您的網站將在以下地址上線：
 
-### 方式 B：使用 Cloudflare Workers
-
-```bash
-# 1. 安裝 Wrangler
-yarn add -D wrangler
-
-# 2. 認證
-yarn wrangler login
-
-# 3. 部署
-yarn deploy
+```
+https://username.github.io/acnh_arts
 ```
 
 ---
 
-## 本地開發
+## 更新網站
+
+編輯檔案後，只需三步：
 
 ```bash
-# 安裝依賴
-yarn install
-
-# 啟動開發伺服器
-yarn dev
-
-# 訪問 http://localhost:8787
-```
-
----
-
-## 日常工作流程
-
-```bash
-# 編輯檔案後...
 git add .
-git commit -m "描述您的變更"
+git commit -m "Update: your message"
 git push
 ```
 
-Cloudflare Pages 會自動構建和部署！
+GitHub Pages 會自動部署更新！
+
+---
+
+## 本地預覽
+
+### 使用 Python
+
+```bash
+python3 -m http.server 8000
+# 訪問 http://localhost:8000
+```
+
+### 使用 Node.js
+
+```bash
+npx http-server
+# 訪問 http://localhost:8080
+```
+
+---
+
+## 項目結構
+
+```
+acnh_arts/
+├── index.html          # 主網頁
+├── arts.md            # 藝術品數據
+├── README.md          # 此檔案
+├── DEPLOYMENT.md      # 詳細部署指南
+├── .gitignore         # Git 忽略規則
+└── assets/
+    └── images/        # 所有圖片檔案
+```
 
 ---
 
 ## 常見問題
 
-**Q: 如何更新網站內容？**
-- 編輯檔案並推送至 GitHub，Cloudflare Pages 會自動部署
+**Q: 我沒有 GitHub 帳戶可以部署嗎？**
+- 需要 GitHub 帳戶才能使用 GitHub Pages
 
-**Q: 成本多少？**
-- 免費！
+**Q: 部署後看不到網站？**
+- 確保 GitHub Pages 已啟用
+- 清除瀏覽器快取（Ctrl+Shift+Delete）
+- 等待 5 分鐘讓部署完成
 
-**Q: 如何添加自訂域名？**
-- 在 Cloudflare Pages 設定中添加域名
+**Q: 如何使用自訂域名？**
+- 購買域名後，在 GitHub Pages 設定中添加自訂域名
+- 詳見 [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+**Q: 可以加入更多藝術品嗎？**
+- 可以！編輯 `index.html` 中的數據並推送更新
 
 ---
 
-詳細文檔請參考 [完整部署指南](./DEPLOYMENT.md)
+## 相關資源
+
+- 🎮 [集合啦！動物森友會官網](https://www.nintendo.com/games/detail/animal-crossing-new-horizons-switch/)
+- 📚 [GitHub Pages 官方文檔](https://docs.github.com/en/pages)
+- 🌐 [TailwindCSS 文檔](https://tailwindcss.com/docs)
+
+---
+
+## 許可證
+
+MIT
+

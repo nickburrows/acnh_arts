@@ -1,16 +1,322 @@
-# 詳細部署指南
+# GitHub Pages 部署指南
 
-本文檔提供詳細的上傳至 GitHub 和部署至 Cloudflare 的完整步驟。
+本文檔提供詳細的上傳至 GitHub 和部署至 GitHub Pages 的完整步驟。
 
 ---
 
 ## 目錄
 
 1. [GitHub 設置](#github-設置)
-2. [Cloudflare Pages 部署](#cloudflare-pages-部署推薦)
-3. [Cloudflare Workers 部署](#cloudflare-workers-部署)
-4. [常見問題](#常見問題)
-5. [故障排除](#故障排除)
+2. [啟用 GitHub Pages](#啟用-github-pages)
+3. [自訂域名](#自訂域名)
+4. [故障排除](#故障排除)
+
+---
+
+## GitHub 設置
+
+### 步驟 1：創建 GitHub 存放庫
+
+1. 訪問 [github.com](https://github.com) 並登入
+2. 點擊右上角頭像 → **Your repositories**
+3. 點擊 **New** 按鈕
+4. 填寫以下信息：
+   - **Repository name**: `acnh_arts`
+   - **Description**: `動森藝術品真偽鑑定網頁`
+   - **Visibility**: `Public`（推薦）
+5. 點擊 **Create repository**
+
+### 步驟 2：配置 Git 用戶名和郵件
+
+如果是第一次使用 Git，需要配置用戶信息：
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+### 步驟 3：初始化並推送本地存放庫
+
+在您的專案目錄中，運行：
+
+```bash
+cd /Users/nick/My/GitHub/acnh_arts
+
+# 檢查 Git 狀態
+git status
+
+# 添加所有檔案到暫存區
+git add .
+
+# 提交
+git commit -m "Initial commit: ACNH Arts Web App"
+
+# 添加遠程倉庫（替換 USERNAME）
+git remote add origin https://github.com/USERNAME/acnh_arts.git
+
+# 設定主分支為 main
+git branch -M main
+
+# 第一次推送（-u 設定上游分支）
+git push -u origin main
+```
+
+### 步驟 4：驗證
+
+訪問 GitHub 上的存放庫頁面：`https://github.com/USERNAME/acnh_arts`
+
+您應該看到所有檔案已上傳。
+
+---
+
+## 啟用 GitHub Pages
+
+### 步驟 1：打開倉庫設定
+
+1. 訪問您的倉庫：`https://github.com/USERNAME/acnh_arts`
+2. 點擊頂部的 **Settings** 標籤
+
+### 步驟 2：導航至 Pages 設定
+
+1. 在左側邊欄找 **Pages**（靠近底部）
+2. 點擊進入
+
+### 步驟 3：配置發布源
+
+1. **Source** 下選擇 **Deploy from a branch**
+2. **Branch** 選擇 **main**
+3. **Folder** 選擇 **/ (root)**
+4. 點擊 **Save**
+
+### 步驟 4：等待部署
+
+頁面會顯示：
+
+```
+Your site is ready to be published at https://username.github.io/acnh_arts
+```
+
+**第一次部署可能需要 3-5 分鐘。**
+
+### 步驟 5：訪問您的網站
+
+打開瀏覽器訪問：
+
+```
+https://username.github.io/acnh_arts
+```
+
+---
+
+## 日常更新流程
+
+### 編輯和推送更新
+
+```bash
+# 1. 編輯您的檔案
+# ...
+
+# 2. 檢查變更
+git status
+
+# 3. 添加變更
+git add .
+
+# 4. 提交
+git commit -m "Update: describe what you changed"
+
+# 5. 推送
+git push
+```
+
+**GitHub Pages 會自動部署（通常 1-2 分鐘內）**
+
+---
+
+## 自訂域名
+
+如果您想使用自己的域名（例如 `acnh-arts.com`），請按照以下步驟。
+
+### 前置要求
+
+- 購買域名（GoDaddy、NameCheap 等）
+- 域名的 DNS 控制面板存取權限
+
+### 步驟 1：添加自訂域名至 GitHub Pages
+
+1. 進入倉庫 **Settings** → **Pages**
+2. 在 **Custom domain** 欄輸入您的域名（例如 `acnh-arts.com`）
+3. 點擊 **Save**
+
+GitHub 會生成一個 `CNAME` 檔案。
+
+### 步驟 2：配置 DNS 記錄
+
+登入您的域名提供商的 DNS 控制面板。
+
+#### 選項 A：A 記錄（推薦）
+
+添加 4 條 A 記錄，指向 GitHub Pages 的 IP：
+
+```
+Name: @
+Type: A
+Value: 185.199.108.153
+
+Name: @
+Type: A
+Value: 185.199.109.153
+
+Name: @
+Type: A
+Value: 185.199.110.153
+
+Name: @
+Type: A
+Value: 185.199.111.153
+```
+
+#### 選項 B：CNAME 記錄
+
+```
+Name: www
+Type: CNAME
+Value: username.github.io
+```
+
+### 步驟 3：等待 DNS 傳播
+
+DNS 變更通常在 15 分鐘到 24 小時內生效。
+
+### 步驟 4：啟用 HTTPS
+
+1. 回到 GitHub Pages 設定
+2. 等待您看到 **DNS lookup successful** 的綠色勾號
+3. 勾選 **Enforce HTTPS**
+
+GitHub 會自動生成免費的 SSL 證書（Let's Encrypt）。
+
+---
+
+## 常見問題
+
+### Q: gh-pages 分支是什麼？為什麼我不需要？
+
+舊版 GitHub Pages 需要 `gh-pages` 分支。現代版本（2019 年後）直接從任何分支部署，無需該分支。
+
+### Q: 推送到 GitHub 時出現 Permission denied 錯誤
+
+解決方案 1：使用 HTTPS（推薦新手）
+```bash
+git remote set-url origin https://github.com/USERNAME/acnh_arts.git
+```
+
+解決方案 2：設置 SSH 密鑰
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+cat ~/.ssh/id_ed25519.pub  # 複製公鑰
+# 在 GitHub Settings → SSH Keys 添加公鑰
+```
+
+### Q: "fatal: remote origin already exists"
+
+```bash
+# 移除舊的遠程倉庫
+git remote remove origin
+
+# 添加新的
+git remote add origin https://github.com/USERNAME/acnh_arts.git
+```
+
+### Q: GitHub Pages 部署失敗或看不到網站
+
+1. **檢查 Settings → Pages 是否已啟用**
+2. **確保 Branch 設定為 main**
+3. **檢查 Folder 設定為 / (root)**
+4. **清除瀏覽器快取**（Ctrl+Shift+Delete）
+5. **檢查 Actions 標籤看部署日誌**
+
+### Q: 圖片無法加載
+
+1. 確認圖片已推送至 GitHub
+   ```bash
+   git status  # 應該看不到 assets/images 有未追蹤的檔案
+   ```
+
+2. 檢查 HTML 中的圖片路徑（無應無開頭 `/`）
+   ```html
+   <!-- ✓ 正確 -->
+   <img src="assets/images/filename.jpg">
+   
+   <!-- ✗ 錯誤 -->
+   <img src="/assets/images/filename.jpg">
+   ```
+
+3. 直接訪問圖片 URL 測試
+   ```
+   https://username.github.io/acnh_arts/assets/images/filename.jpg
+   ```
+
+### Q: 自訂域名配置後為什麼還是看不到 HTTPS？
+
+GitHub 需要 6-24 小時才能為自訂域名生成 SSL 證書。耐心等待並在 Pages 設定中監控狀態。
+
+### Q: 我可以有多個 GitHub Pages 站點嗎？
+
+可以！您可以有：
+- 1 個個人站點（username.github.io）
+- 無限個項目站點（其他倉庫的 GitHub Pages）
+
+### Q: 如何刪除 GitHub Pages？
+
+1. Settings → Pages
+2. **Source** 改為 **None**
+3. 點擊 **Save**
+
+---
+
+## 進階：使用 GitHub Actions 自動部署
+
+如果您想自動化部署流程，可以使用 GitHub Actions（可選）。
+
+在 `.github/workflows/deploy.yml` 中：
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        run: echo "Static assets deployed!"
+```
+
+這樣每次推送 main 分支時，會自動運行此工作流程。
+
+---
+
+## 相關資源
+
+- 📚 [GitHub Pages 官方文檔](https://docs.github.com/en/pages)
+- 🌐 [pages.github.com 官網](https://pages.github.com/)
+- 💾 [Git 官方文檔](https://git-scm.com/doc)
+- 🔒 [GitHub SSH 密鑰設置](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+
+---
+
+## 需要更多幫助？
+
+- 訪問 GitHub Community Discussions
+- 查閱 GitHub Pages 官方文檔
+- 在倉庫提交 Issue
+
 
 ---
 
