@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動森藝術品真偽鑑定</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <!-- Dark Mode Toggle Button -->
+    <button 
+        id="darkModeToggle"
+        class="fixed top-4 right-4 z-40 p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all duration-200"
+        title="切換深色模式"
+    >
+        <span id="darkModeIcon" class="text-2xl">🌙</span>
+    </button>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="relative max-w-4xl max-h-[90vh] flex flex-col">
+            <button 
+                id="closeModal" 
+                class="absolute -top-10 -right-10 text-white hover:text-gray-300 text-2xl font-bold"
+            >
+                ✕
+            </button>
+            <img 
+                id="modalImage" 
+                src="" 
+                alt="放大圖片" 
+                class="max-w-full max-h-[90vh] object-contain"
+            >
+        </div>
+    </div>
+
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 dark:bg-gray-900 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
+                    🎨 動森藝術品真偽鑑定
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">
+                    來自《集合啦！動物森友會》的藝術品及雕塑真偽判別指南
+                </p>
+            </div>
+
+            <!-- Search Section -->
+            <div class="mb-8 flex justify-center">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="搜尋藝術品名稱..."
+                    class="w-full max-w-md px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 transition-colors duration-300"
+                >
+            </div>
+
+            <!-- Paintings Section -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 flex items-center transition-colors duration-300">
+                    <span class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg">
+                        🖼️ 畫作
+                    </span>
+                </h2>
+                <div class="overflow-x-auto rounded-lg shadow-lg dark:shadow-gray-800">
+                    <table class="w-full border-collapse bg-white dark:bg-gray-800 transition-colors duration-300">
+                        <thead>
+                            <tr class="bg-purple-100 dark:bg-purple-900 transition-colors duration-300">
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white transition-colors duration-300">名稱</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-center font-semibold text-gray-900 dark:text-white transition-colors duration-300">圖片</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white transition-colors duration-300">真偽判別</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paintings-container">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sculptures Section -->
+            <section>
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 flex items-center transition-colors duration-300">
+                    <span class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-4 py-2 rounded-lg">
+                        🗿 雕塑
+                    </span>
+                </h2>
+                <div class="overflow-x-auto rounded-lg shadow-lg dark:shadow-gray-800">
+                    <table class="w-full border-collapse bg-white dark:bg-gray-800 transition-colors duration-300">
+                        <thead>
+                            <tr class="bg-blue-100 dark:bg-blue-900 transition-colors duration-300">
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white transition-colors duration-300">名稱</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-center font-semibold text-gray-900 dark:text-white transition-colors duration-300">圖片</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white transition-colors duration-300">真偽判別</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sculptures-container">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Paintings data
+        const paintings = [
+            { name: "俊俏的名畫", image: "assets/images/acnh_art02.jpg", description: "假貨是八字眉" },
+            { name: "優美的名畫", image: "assets/images/acnh_art04.jpg", description: "假貨獵人只有1個" },
+            { name: "光線的名畫", image: "assets/images/acnh_art06.jpg", description: "只有真品" },
+            { name: "勇敢的名畫", image: "assets/images/acnh_art08.jpg", description: "妹妹頭是假貨" },
+            { name: "動人的名畫", image: "assets/images/acnh_art09.jpg", description: "假貨右上角沒有樹" },
+            { name: "厲害的名畫", image: "assets/images/acnh_art10.jpg", description: "只有真品" },
+            { name: "名貴的名畫", image: "assets/images/acnh_art11.jpg", description: "只有真品" },
+            { name: "和煦的名畫", image: "assets/images/acnh_art12.jpg", description: "只有真品" },
+            { name: "婀娜的名畫", image: "assets/images/acnh_art13.jpg", description: "真品的貂比較白" },
+            { name: "學術性的名畫", image: "assets/images/acnh_art14.jpg", description: "右上角有污漬的是假貨" },
+            { name: "常見的名畫", image: "assets/images/acnh_art15.jpg", description: "只有真品" },
+            { name: "平靜的名畫", image: "assets/images/acnh_art16.jpg", description: "真品倒出來的比較細" },
+            { name: "強健的名畫", image: "assets/images/acnh_art17.jpg", description: "只有真品" },
+            { name: "很好的名畫", image: "assets/images/acnh_art19.jpg", description: "只有真品" },
+            { name: "有名的名畫", image: "assets/images/acnh_art20.jpg", description: "蒙娜麗莎沒有眉毛" },
+            { name: "有趣的名畫", image: "assets/images/acnh_art21.jpg", description: "真品胸前有花" },
+            { name: "沉沒的名畫", image: "assets/images/acnh_art23.jpg", description: "只有真品" },
+            { name: "漂亮的名畫", image: "assets/images/acnh_art24.jpg", description: "真品耳環是圓的" },
+            { name: "熱鬧的名畫", image: "assets/images/acnh_art25.jpg", description: "只有真品" },
+            { name: "珍貴的名畫", image: "assets/images/acnh_art26.jpg", description: "只有真品" },
+            { name: "磅礡的名畫", image: "assets/images/acnh_art28.jpg", description: "只有真品" },
+            { name: "神秘的名畫", image: "assets/images/acnh_art30.jpg", description: "只有真品" },
+            { name: "端莊的名畫", image: "assets/images/acnh_art32.jpg", description: "真品面朝右，人物占比小" },
+            { name: "粗野的名畫右半邊", image: "assets/images/acnh_art33.jpg", description: "真品：綠色風神" },
+            { name: "粗野的名畫左半邊", image: "assets/images/acnh_art34.jpg", description: "真品：白色雷神" },
+            { name: "細緻的名畫", image: "assets/images/acnh_art35.jpg", description: "真品葉子是藍色" },
+            { name: "肅穆的名畫", image: "assets/images/acnh_art38.jpg", description: "真品：後面門口的人手是貼著的" },
+            { name: "舒適的名畫", image: "assets/images/acnh_art39.jpg", description: "只有真品" },
+            { name: "閃爍的名畫", image: "assets/images/acnh_art42.jpg", description: "只有真品" },
+            { name: "驚人的名畫", image: "assets/images/acnh_art43.jpg", description: "真品：有帽子" }
+        ];
+
+        // Sculptures data
+        const sculptures = [
+            { name: "似曾相識的雕塑", image: "assets/images/acnh_art01.jpg", description: "只有真品" },
+            { name: "偉大的雕塑", image: "assets/images/acnh_art03.jpg", description: "只有真品" },
+            { name: "充滿母愛的雕塑", image: "assets/images/acnh_art05.jpg", description: "吐舌頭的是假的" },
+            { name: "出乎意料的雕塑", image: "assets/images/acnh_art07.jpg", description: "真品中間沒有把手" },
+            { name: "強壯的雕塑", image: "assets/images/acnh_art18.jpg", description: "假貨手上有戴手錶" },
+            { name: "武士的雕刻", image: "assets/images/acnh_art22.jpg", description: "有鏟子的是假貨" },
+            { name: "石頭顱雕塑", image: "assets/images/acnh_art27.jpg", description: "微笑的是假貨" },
+            { name: "神祕的雕塑", image: "assets/images/acnh_art29.jpg", description: "真品沒有耳環" },
+            { name: "神聖的雕塑", image: "assets/images/acnh_art31.jpg", description: "真品的右腳在前(我們的視角看是左邊那隻腳)" },
+            { name: "線索的雕塑", image: "assets/images/acnh_art36.jpg", description: "真品：灰色石碑" },
+            { name: "美麗的雕塑", image: "assets/images/acnh_art37.jpg", description: "真品：沒有項鍊" },
+            { name: "英挺的雕塑", image: "assets/images/acnh_art40.jpg", description: "真品：手上沒有夾書" },
+            { name: "遠古的雕塑", image: "assets/images/acnh_art41.jpg", description: "真品：耳朵沒有天線、沒有眼睛" }
+        ];
+
+        function createThumbnailPath(imagePath) {
+            // 在副檔名前添加 "_150"
+            const lastDotIndex = imagePath.lastIndexOf('.');
+            return imagePath.slice(0, lastDotIndex) + '_150' + imagePath.slice(lastDotIndex);
+        }
+
+        function createTableRow(item) {
+            const isOnlyOriginal = item.description === "只有真品";
+            const badgeColor = isOnlyOriginal ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200" : "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200";
+            const thumbnailPath = createThumbnailPath(item.image);
+            
+            return `
+                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 search-item" data-searchtext="${item.name.toLowerCase()}">
+                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-white font-medium transition-colors duration-300">${item.name}</td>
+                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-3 text-center">
+                        <div class="flex justify-center">
+                            <img 
+                                src="${thumbnailPath}" 
+                                alt="${item.name}" 
+                                class="w-[150px] h-auto object-cover cursor-pointer hover:opacity-75 transition-opacity duration-200 rounded"
+                                loading="lazy"
+                                data-fullimage="${item.image}"
+                            >
+                        </div>
+                    </td>
+                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-3">
+                        <span class="text-sm ${badgeColor} px-3 py-2 rounded-full inline-block font-medium transition-colors duration-300">
+                            ${item.description}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function renderRows(items, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = items.map(item => createTableRow(item)).join('');
+        }
+
+        // Render both sections
+        renderRows(paintings, 'paintings-container');
+        renderRows(sculptures, 'sculptures-container');
+
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeBtn = document.getElementById('closeModal');
+
+        // Add click event listener to image container using event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.hasAttribute('data-fullimage')) {
+                const fullImagePath = e.target.getAttribute('data-fullimage');
+                modalImage.src = fullImagePath;
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+        // Close modal
+        function closeImageModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeBtn.addEventListener('click', closeImageModal);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImageModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const searchItems = document.querySelectorAll('.search-item');
+            
+            searchItems.forEach(item => {
+                const searchText = item.getAttribute('data-searchtext');
+                if (searchText.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Dark mode functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const html = document.documentElement;
+        
+        // Check system preference or saved preference
+        function initializeDarkMode() {
+            const savedMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedMode !== null) {
+                const isDark = savedMode === 'true';
+                if (isDark) {
+                    html.classList.add('dark');
+                    darkModeIcon.textContent = '☀️';
+                } else {
+                    html.classList.remove('dark');
+                    darkModeIcon.textContent = '🌙';
+                }
+            } else if (prefersDark) {
+                html.classList.add('dark');
+                darkModeIcon.textContent = '☀️';
+            }
+        }
+        
+        // Initialize dark mode on page load
+        initializeDarkMode();
+        
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', function() {
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeIcon.textContent = isDark ? '☀️' : '🌙';
+        });
+    </script>
+</body>
+</html>
